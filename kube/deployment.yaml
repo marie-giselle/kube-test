@@ -4,6 +4,10 @@ metadata:
     name: health-deployment
 spec:
     replicas: 2
+    strategy:
+      type: RollingUpdate
+      rollingUpdate:
+        maxUnavailable: 1
     selector:
        matchLabels:
           app: health-app
@@ -18,3 +22,15 @@ spec:
             ports:
               - name: web 
                 containerPort: 8000
+            livenessProbe:
+              httpGet:
+                path: /health
+                port: 8000
+              initialDelaySeconds: 15
+              periodSeconds: 3
+            readinessProbe:
+              httpGet:
+                path: /health
+                port: 8000
+              initialDelaySeconds: 15
+              periodSeconds: 10
